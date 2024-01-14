@@ -1,4 +1,4 @@
-<!--{% extends 'login/base.html' %}-->
+{% extends 'login/base.html' %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@
 				<div class="login100-pic js-tilt" data-tilt>
 					<img src="{% static 'login/images/img-01.png'%}" alt="IMG">
 				</div>
-
+				{% block content %}
 				<form action="." method="post" class="login100-form validate-form">
 					{% csrf_token %}
 					<span class="login100-form-title">
@@ -84,6 +84,7 @@
 						</a>
 					</div>
 				</form>
+				{% endblock %}
 			</div>
 		</div>
 	</div>
