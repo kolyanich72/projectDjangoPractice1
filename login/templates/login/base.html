@@ -1,13 +1,12 @@
-<!--{% extends 'login/base.html' %}-->
-
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>Login V1</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
+<!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="{% static 'login/images/icons/favicon.ico'%}"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/bootstrap/css/bootstrap.min.css'%}">
@@ -15,7 +14,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'login/fonts/font-awesome-4.7.0/css/font-awesome.min.css'%}">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/animate/animate.css'%}">
-<!--===============================================================================================-->	
+<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/css-hamburgers/hamburgers.min.css'%}">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/select2/select2.min.css'%}">
@@ -25,7 +24,7 @@
 <!--===============================================================================================-->
 </head>
 <body>
-	
+
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
@@ -33,9 +32,8 @@
 					<img src="{% static 'login/images/img-01.png'%}" alt="IMG">
 				</div>
 
-		<!--		<form class="login100-form validate-form">-->
-				<form action="." method="post" class="login100-form validate-form">
-				<!--	{% csrf_token %} -->
+				<form class="login100-form validate-form">
+					{% csrf_token %}
 					<span class="login100-form-title">
 						Member Login
 					</span>
@@ -55,7 +53,7 @@
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
 					</div>
-					
+
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn">
 							Login
@@ -81,11 +79,11 @@
 			</div>
 		</div>
 	</div>
-	
-	
 
-	
-<!--===============================================================================================-->	
+
+
+
+<!--===============================================================================================-->
 	<script src="{% static 'login/vendor/jquery/jquery-3.2.1.min.js'%}"></script>
 <!--===============================================================================================-->
 	<script src="{% static 'login/vendor/bootstrap/js/popper.js'%}"></script>
