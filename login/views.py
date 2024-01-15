@@ -50,7 +50,7 @@ class CreateAccount(View):
            user.save()
            login(request, user)
            return redirect('store:shop')
-       return redirect('login:create')
+       return render(request, 'login:create',context={'error':form.errors})
 
 
 
