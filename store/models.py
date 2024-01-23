@@ -1,6 +1,19 @@
 from django.db import models
 
 # Create your models here.
+
+class Person(models.Model):
+    short_name = models.CharField(max_length=30, null=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    reg_data = models.DateTimeField(auto_now_add=True, null=True)
+    last_visit_data = models.DateTimeField(auto_now=True, null=True)
+    contact_mail_field_data = models.EmailField(null=True)
+
+    def __str__(self):
+        return self.short_name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -27,3 +40,13 @@ class Discount(models.Model):
 
     def __str__(self):
         return f'{self.product.name}_{self.value}%_{self.date_end}'
+
+class Cart(models.Model):
+    ...
+
+class WishList(models.Model):
+    ...
+    # name = models.CharField(max_length=255)
+
+    # def __str__(self):
+    #     return self.name

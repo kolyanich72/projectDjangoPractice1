@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
 from django.contrib.auth.models import User
-
+from rest_framework import serializers
 
 
 
@@ -42,6 +42,7 @@ class CreateAccount(View):
 
    def post(self, request):
        form = CustomUserCreationForm(data=request.POST)
+
        if form.is_valid():
            username = form.cleaned_data.get('username')
            email = form.cleaned_data.get('email')

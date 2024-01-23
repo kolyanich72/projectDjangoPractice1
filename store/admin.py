@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Discount
+from .models import Category, Product, Discount, Person
 #gsm9390061
 #user1 qwerty123654
 # Register your models here.
@@ -8,3 +8,4 @@ from .models import Category, Product, Discount
 admin.site.register(Category)
 admin.site.register(Product)
 admin.site.register(Discount)
+admin.site.register(Person)

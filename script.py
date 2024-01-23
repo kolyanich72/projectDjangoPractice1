@@ -1,6 +1,7 @@
 import django
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project1.settings')  #
+import unittest
 
 django.setup()
 from store.models import Category, Product
