@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from  rest_framework import viewsets, serializers, routers
 
+from store.urls import router as cart_router
 
 
 
@@ -25,7 +25,10 @@ urlpatterns = [
     path('grappelli/',  include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('someapplication/', include('someapplication.urls')),
-    path('shop/', include('store.urls')),
+    path('', include('store.urls')),
+    #path('shop/', include('store.urls')),
     path('login/', include('login.urls')),
+    path('api/', include(cart_router.urls)),
 
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

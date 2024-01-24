@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+
+    'rest_framework',  # для работа с API
     'someapplication',
     'store',
     'login',
+    'debug_toolbar',      # для SQL запросов визуализации при работе в терминале и визуализации в браузере служеб инф
 
 ]
 
@@ -53,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
 
 ROOT_URLCONF = 'project1.urls'
@@ -128,6 +133,11 @@ STATICFILES_DIRS = [Path.joinpath(BASE_DIR,'static/')]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost",
+    ]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

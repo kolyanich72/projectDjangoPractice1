@@ -5,8 +5,13 @@ from datetime import datetime
 from  django.http import HttpResponse
 from django.db.models import Subquery, OuterRef, F,ExpressionWrapper, DecimalField, Case, When
 from  django.utils import timezone
-from  .models import Product, Category, Discount
-from .serializers import CartSerializer
+#from  .models import Product, Category, Discount, Cart
+from .serializers import CartSerializer, WishlistSerializer
+import store.models as models
+from rest_framework import viewsets, response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
 
 
 
@@ -19,7 +24,7 @@ class ShopView(View):
             (F('price') * (100.0-F('discount_value'))/100),
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
-        products = Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
+        products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
             price_after=price_with_discnt).values('id', 'name', 'image', 'price_before', 'price_after', 'discount_value')
 
         return render(request, 'store/shop.html',{'data':products})
@@ -94,7 +99,7 @@ class ShopView(View):
 
 class ProductSingleView(View):
     def get(self, request, id):
-        data = Product.objects.get(id=id)
+        data = models.Product.objects.get(id=id)
         return render(request, 'store/product-single.html',
                       context={'name':data.name, 'description':data.description,
                                'price': data.price, 'rating': 5.0,
@@ -161,3 +166,72 @@ class ProductSingleView(View):
         #              'url': 'store/images/product-12.jpg'}
         #         }
         # return render(request, 'store/product-single.html', context=data[id])
+
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = models.Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        ## Можно записать так, для получения товара (проверка что он уже есть в корзине)
+        # cart_items = Cart.objects.filter(user=request.user,
+        #  product__id = request.data.get('product'))
+        # Или можно так, так как мы переопределили метод get_queryset
+        cart_items = self.get_queryset().filter(product__id=request.data.get('product'))
+
+            # request API передаёт параметры по названиям полей в БД, поэтому ловим product
+        if cart_items:  # Если продукт уже есть в корзине
+            cart_item = cart_items[0]
+            if request.data.get('quantity'):  # Если в запросе передан параметр quantity,
+            # то добавляем значение к значению в БД
+                cart_item.quantity += int(request.data.get('quantity'))
+            else:  # Иначе просто добавляем значение по умолчению 1
+                cart_item.quantity += 1
+
+        else:  # Если продукта ещё нет в корзине
+            product = get_object_or_404(models.Product, id=request.data.get('product'))
+            # Получаем продукт и проверяем что он вообще существует, если его нет,то выйдет ошибка 404
+            if request.data.get('quantity'):  # Если передаём точное количество продукта,то передаём его
+                cart_item = models.Cart(user=request.user, product=product, quantity=request.data.get('quantity'))
+            else:  # Иначе создаём объект по умолчанию (quantity по умолчанию =  1, так прописали в моделях)
+                cart_item = models.Cart(user=request.user, product=product)
+        cart_item.save()  # Сохранили объект в БД
+        return response.Response({'message': 'Product added to cart'})  #Вернули ответ, что всё прошло успешно
+
+    def update(self, request, *args, **kwargs):
+    # Для удобства в kwargs передаётся id строки для изменения в БД, под параметром pk
+        cart_item = get_object_or_404(models.Cart, id=kwargs['pk'])
+        if request.data.get('quantity'):
+            cart_item.quantity = request.data['quantity']
+        if request.data.get('product'):
+            product = get_object_or_404(models.Product, id=request.data['product'])
+        cart_item.product = product
+        cart_item.save()
+        return response.Response({'message': 'Product change to cart'}, status=201)
+
+    def destroy(self, request, *args, **kwargs):
+    # В этот раз напишем примерно так как это делает фреймфорк самостоятельно
+        cart_item = self.get_queryset().get(id=kwargs['pk'])
+        cart_item.delete()
+        return response.Response({'message': 'Product delete from cart'}, status=201)
+
+class WishListViewSet(View):
+    queryset = models.WishList.objects.all()
+    serializer_class = WishlistSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+
+class CartView(View):
+    def get(self, request):
+        return render(request, 'store/cart.html')
+
+
+class WishlistView(View):
+    def get(self, request):
+        return render(request, 'store/cart.html')

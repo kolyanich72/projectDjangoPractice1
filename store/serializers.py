@@ -1,11 +1,6 @@
 from rest_framework import routers, serializers, viewsets
-from .models import Cart, Person
+from .models import Cart, Person, WishList
 
-
-class CartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cart
-        fields = '__all__'
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +10,14 @@ class PersonSerializer(serializers.ModelSerializer):
 class PersonViewSet(viewsets.ModelViewSet):
     queryset = Person.objects.all()
     # serializer_class = PersonSerializer
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WishList
+        fields = '__all__'
