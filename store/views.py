@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 #import datetime
 from datetime import datetime
@@ -254,6 +254,12 @@ class CartView(View):
 class WishlistView(View):
 
     def get(self, request):
+        if not request.user.is_authenticated:
+        # код который необходим для обработчика
+           # return render(request, "store/wishlist.html")
+        # Иначе отправляет авторизироваться
+            return redirect('login:login')  # from django.shortcuts import redirect
+
         discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
                               discount__date_end__gte=timezone.now(),then=F('discount__value')),
                               default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
