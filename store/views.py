@@ -228,10 +228,53 @@ class WishListViewSet(View):
 
 
 class CartView(View):
+
     def get(self, request):
-        return render(request, 'store/cart.html')
+        discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
+                              discount__date_end__gte=timezone.now(),then=F('discount__value')),
+                              default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
+
+        price_with_discnt = ExpressionWrapper(
+            (F('price') * (100.0-F('discount_value'))/100),
+            output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+
+        products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
+             price_after=price_with_discnt).values(
+                     'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
+                                                     )
+        prod_cart = models.Cart.objects.all().filter(user=self.request.user)
+        d1 = []
+        for i in prod_cart:
+            d1.append(i.product_id)
+
+        return render(request, 'store/cart.html',{'data':products.filter(id__in=d1)})
 
 
 class WishlistView(View):
+
     def get(self, request):
-        return render(request, 'store/cart.html')
+        discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
+                              discount__date_end__gte=timezone.now(),then=F('discount__value')),
+                              default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
+
+        price_with_discnt = ExpressionWrapper(
+            (F('price') * (100.0-F('discount_value'))/100),
+            output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+
+        products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
+             price_after=price_with_discnt).values(
+                     'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
+                                                     )
+        prod_cart = models.WishList.objects.all().filter(user=self.request.user)
+        d1 = []
+        for i in prod_cart:
+
+            d1.append(i.product_id)
+
+        return render(request, 'store/wishlist.html',{'data':products.filter(id__in=d1)})
+
+
+    # def get(self, request):
+    #     return render(request, 'store/wishlist.html')

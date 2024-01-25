@@ -55,5 +55,5 @@ class WishList(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f'selectted to wish- {self.product} price -{self.product.price}'
+        return f'{self.user} selected to wish- {self.product} price -{self.product.price}'
 
