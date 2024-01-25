@@ -274,7 +274,3 @@ class WishlistView(View):
             d1.append(i.product_id)
 
         return render(request, 'store/wishlist.html',{'data':products.filter(id__in=d1)})
-
-
-    # def get(self, request):
-    #     return render(request, 'store/wishlist.html')
