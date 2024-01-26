@@ -8,8 +8,8 @@
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
-          	<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
-            <h1 class="mb-0 bread">My Wish List</h1>
+          	<p class="breadcrumbs"><span class="mr-2"><a href="{% url 'store:shop' %}">Home</a></span> <span><a href="{% url 'store:cart' %}">Cart</span></p>
+            <h1 class="mb-0 bread">{{request.user.username}} Wish List</h1>
           </div>
         </div>
       </div>
@@ -35,8 +35,8 @@
 						    <tbody>
 							{% for product in data %}
 						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
+						        <td class="product-remove"><a href="{% url 'store:wishlistadd' product.id %}"><span class="ion-ios-close"></span></a></td>
+
 						        <td class="image-prod"><a href="{% url 'store:product' product.id  %}"><div class="img" style="background-image:url(/{{product.image}});"></div></td>
 						        
 						        <td class="product-name">
