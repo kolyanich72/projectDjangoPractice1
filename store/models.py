@@ -1,13 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 class Person(models.Model):
     short_name = models.CharField(max_length=30, null=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    reg_data = models.DateTimeField(auto_now_add=True, null=True)#,  default='')
+    reg_data = models.DateTimeField(auto_now_add=True, null=True)  # ,  default='')
     last_visit_data = models.DateTimeField(auto_now=True, null=True)
     contact_mail_field_data = models.EmailField(null=True)
 
@@ -21,6 +22,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -33,6 +35,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class Discount(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     value = models.IntegerField()
@@ -42,18 +45,19 @@ class Discount(models.Model):
     def __str__(self):
         return f'{self.product.name}_{self.value}%_{self.date_end}'
 
+
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,  null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(default=1)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.user} selected to cart- {self.product} price -{self.quantity}'
 
+
 class WishList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,  null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.user} selected to wish- {self.product} price -{self.product.price}'
-

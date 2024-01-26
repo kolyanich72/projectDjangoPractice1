@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-#import datetime
+# import datetime
 from datetime import datetime
-from  django.http import HttpResponse
-from django.db.models import Subquery, OuterRef, F,ExpressionWrapper, DecimalField, Case, When
-from  django.utils import timezone
-#from  .models import Product, Category, Discount, Cart
+from django.http import HttpResponse
+from django.db.models import Subquery, OuterRef, F, ExpressionWrapper, DecimalField, Case, When
+from django.utils import timezone
+# from  .models import Product, Category, Discount, Cart
 from .serializers import CartSerializer, WishlistSerializer
 import store.models as models
 from rest_framework import viewsets, response
@@ -13,34 +13,31 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 
 
-
-
 class ShopView(View):
     def get(self, request):
         print(request, "   SHOP reqest")
         discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
-                              discount__date_end__gte=timezone.now(),then=F('discount__value')),
+                                   discount__date_end__gte=timezone.now(), then=F('discount__value')),
                               default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
         price_with_discnt = ExpressionWrapper(
-            (F('price') * (100.0-F('discount_value'))/100),
+            (F('price') * (100.0 - F('discount_value')) / 100),
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
         products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
-            price_after=price_with_discnt).values('id', 'name', 'image', 'price_before', 'price_after', 'discount_value')
+                                                   price_after=price_with_discnt).values('id', 'name', 'image',
+                                                                                         'price_before', 'price_after',
+                                                                                         'discount_value')
 
-        return render(request, 'store/shop.html',{'data':products})
-
-
+        return render(request, 'store/shop.html', {'data': products})
 
 
 class ProductSingleView(View):
     def get(self, request, id):
-
         data = models.Product.objects.get(id=id)
         return render(request, 'store/product-single.html',
-                      context={'name':data.name, 'description':data.description,
+                      context={'name': data.name, 'description': data.description,
                                'price': data.price, 'rating': 5.0,
-                               'url': data.image.url,                       })
+                               'url': data.image.url, })
 
 
 class CartViewSet(viewsets.ModelViewSet):
@@ -58,11 +55,11 @@ class CartViewSet(viewsets.ModelViewSet):
         # Или можно так, так как мы переопределили метод get_queryset
         cart_items = self.get_queryset().filter(product__id=request.data.get('product'))
 
-            # request API передаёт параметры по названиям полей в БД, поэтому ловим product
+        # request API передаёт параметры по названиям полей в БД, поэтому ловим product
         if cart_items:  # Если продукт уже есть в корзине
             cart_item = cart_items[0]
             if request.data.get('quantity'):  # Если в запросе передан параметр quantity,
-            # то добавляем значение к значению в БД
+                # то добавляем значение к значению в БД
                 cart_item.quantity += int(request.data.get('quantity'))
             else:  # Иначе просто добавляем значение по умолчению 1
                 cart_item.quantity += 1
@@ -75,10 +72,10 @@ class CartViewSet(viewsets.ModelViewSet):
             else:  # Иначе создаём объект по умолчанию (quantity по умолчанию =  1, так прописали в моделях)
                 cart_item = models.Cart(user=request.user, product=product)
         cart_item.save()  # Сохранили объект в БД
-        return response.Response({'message': 'Product added to cart'})  #Вернули ответ, что всё прошло успешно
+        return response.Response({'message': 'Product added to cart'})  # Вернули ответ, что всё прошло успешно
 
     def update(self, request, *args, **kwargs):
-    # Для удобства в kwargs передаётся id строки для изменения в БД, под параметром pk
+        # Для удобства в kwargs передаётся id строки для изменения в БД, под параметром pk
         cart_item = get_object_or_404(models.Cart, id=kwargs['pk'])
         if request.data.get('quantity'):
             cart_item.quantity = request.data['quantity']
@@ -89,35 +86,34 @@ class CartViewSet(viewsets.ModelViewSet):
         return response.Response({'message': 'Product change to cart'}, status=201)
 
     def destroy(self, request, *args, **kwargs):
-    # В этот раз напишем примерно так как это делает фреймфорк самостоятельно
+        # В этот раз напишем примерно так как это делает фреймфорк самостоятельно
         cart_item = self.get_queryset().get(id=kwargs['pk'])
         cart_item.delete()
         return response.Response({'message': 'Product delete from cart'}, status=201)
-
 
 
 class CartView(View):
 
     def get(self, request, ):
         discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
-                              discount__date_end__gte=timezone.now(),then=F('discount__value')),
+                                   discount__date_end__gte=timezone.now(), then=F('discount__value')),
                               default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
 
         price_with_discnt = ExpressionWrapper(
-            (F('price') * (100.0-F('discount_value'))/100),
+            (F('price') * (100.0 - F('discount_value')) / 100),
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
 
         products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
-             price_after=price_with_discnt).values(
-                     'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
-                                                     )
+                                                   price_after=price_with_discnt).values(
+            'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
+            )
         prod_cart = models.Cart.objects.all().filter(user=self.request.user)
         d1 = []
         for i in prod_cart:
             d1.append(i.product_id)
 
-        return render(request, 'store/cart.html',{'data':products.filter(id__in=d1)})
+        return render(request, 'store/cart.html', {'data': products.filter(id__in=d1)})
 
 
 class WishlistView(View):
@@ -125,9 +121,9 @@ class WishlistView(View):
     def get(self, request, id=None):
 
         if not request.user.is_authenticated:
-        # код который необходим для обработчика
-           # return render(request, "store/wishlist.html")
-        # Иначе отправляет авторизироваться
+            # код который необходим для обработчика
+            # return render(request, "store/wishlist.html")
+            # Иначе отправляет авторизироваться
             return redirect('login:login')  # from django.shortcuts import redirect
         # wishlist_data = models.WishList.objects.all()
         # id_list = []
@@ -157,29 +153,25 @@ class WishlistView(View):
         #
         #
 
-
         discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
-                              discount__date_end__gte=timezone.now(),then=F('discount__value')),
+                                   discount__date_end__gte=timezone.now(), then=F('discount__value')),
                               default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
 
         price_with_discnt = ExpressionWrapper(
-            (F('price') * (100.0-F('discount_value'))/100),
+            (F('price') * (100.0 - F('discount_value')) / 100),
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
 
         products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
-             price_after=price_with_discnt).values(
-                     'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
-                                                     )
+                                                   price_after=price_with_discnt).values(
+            'id', 'name', 'image', 'price_before', 'price_after', 'discount_value', 'description'
+            )
         prod_cart = models.WishList.objects.all().filter(user=self.request.user)
         d1 = []
         for i in prod_cart:
-
             d1.append(i.product_id)
 
-        return render(request, 'store/wishlist.html',{'data':products.filter(id__in=d1)})
-
-
+        return render(request, 'store/wishlist.html', {'data': products.filter(id__in=d1)})
 
 
 class WishlistViewAddDel(View):
@@ -187,15 +179,15 @@ class WishlistViewAddDel(View):
     def get(self, request, id):
 
         if not request.user.is_authenticated:
-        # код который необходим для обработчика
-           # return render(request, "store/wishlist.html")
-        # Иначе отправляет авторизироваться
+            # код который необходим для обработчика
+            # return render(request, "store/wishlist.html")
+            # Иначе отправляет авторизироваться
             return redirect('login:login')  # from django.shortcuts import redirect
         wishlist_data = models.WishList.objects.all()
         id_list = []
 
         for i in wishlist_data:
-            print(id_list,"  +  ",  end='')
+            print(id_list, "  +  ", end='')
             id_list.append(i.product_id)
 
             print(i.id)
@@ -216,7 +208,6 @@ class WishlistViewAddDel(View):
 class WishlistViewDel(View):
 
     def get(self, request, id):
-
         if not request.user.is_authenticated:
             return redirect('login:login')  # from django.shortcuts import redirect
 
