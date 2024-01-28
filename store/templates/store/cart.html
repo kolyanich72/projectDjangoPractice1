@@ -61,7 +61,7 @@
 
 					             	<input type="number"  name="quantity" id="quantity" class="quantity form-control input-number" value=1 min=1 max=100>
 										<output class="quantity-output" for="quantity"></output>
-										<button class="amount" onclick="SubmitValues()">confirm</button>
+										<button class="amount" onclick="SubmitValues()"><a href="{% url 'store:cartadd' 'add_to_cart'  product.id  1  %}"></a>confirm</button>
 
 
 
