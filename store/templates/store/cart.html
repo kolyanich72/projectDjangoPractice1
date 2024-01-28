@@ -43,7 +43,7 @@
 						      <tr class="text-center">
 						        <td class="product-remove"><a href="{% url 'store:cartadd' 'remove'  product.id  1  %}"><span class="ion-ios-close"></span></a></td>
 						        
-						        <td class="image-prod"><a href="{% url 'store:product' product.id  %}"><div class="img" style="background-image:url(/{{product.image}});"></div></td>
+						        <td class="image-prod"><a href="{% url 'store:product' product.id  %}"><div class="img" style="background-image:url(/{{product.image}});"></div></a></td>
 						        
 						        <td class="product-name">
 						        	<h3>{{product.name}}</h3>
