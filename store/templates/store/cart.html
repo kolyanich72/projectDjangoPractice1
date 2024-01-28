@@ -8,8 +8,10 @@
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
-          	<p class="breadcrumbs"><span class="mr-2"><a href="{% url 'store:shop' %}">Home</a></span> <span><a href="{% url 'store:wishlist' %}">Wish List</span></p>
-            <h1 class="mb-0 bread">{{request.user.username}} Cart</h1>
+          	<p class="breadcrumbs"><span class="mr-2"> <a href="{% url 'store:shop' %}">Home</a></span> <span><a href="{% url 'store:wishlist' %}"> Wish List </a></span></p>
+<!--            <p class="breadcrumbs"><span class="mr-2"> <a href="index.html"                >Home</a></span>  <span> Products    </span></p>-->
+
+			  <h1 class="mb-0 bread">{{request.user.username}} Cart</h1>
           </div>
         </div>
       </div>
@@ -39,7 +41,7 @@
 
 							{% for product in data %}
 						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+						        <td class="product-remove"><a href="{% url 'store:cartadd' 'remove'  product.id  1  %}"><span class="ion-ios-close"></span></a></td>
 						        
 						        <td class="image-prod"><a href="{% url 'store:product' product.id  %}"><div class="img" style="background-image:url(/{{product.image}});"></div></td>
 						        
@@ -62,6 +64,7 @@
 										<button class="amount" onclick="SubmitValues()">confirm</button>
 
 
+
 					          	</div>
 					          </td>
 
@@ -76,6 +79,14 @@
 					  </div>
     			</div>
     		</div>
+
+
+
+
+
+
+
+
     		<div class="row justify-content-end">
     			<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
     				<div class="cart-total mb-3">

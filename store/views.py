@@ -116,6 +116,45 @@ class CartView(View):
         return render(request, 'store/cart.html', {'data': products.filter(id__in=d1)})
 
 
+class CartViewAddToList(View):
+
+    def get(self,  request, action_do, id, quantity):
+        print(request, '    from shop',  id)
+        if not request.user.is_authenticated:
+            # код который необходим для обработчика
+            # return render(request, "store/wishlist.html")
+            # Иначе отправляет авторизироваться
+            return redirect('login:login')  # from django.shortcuts import redirect
+        cartlist_data = models.Cart.objects.all()
+        id_list = []
+
+        for i in cartlist_data:
+            print(i, '\n', i.id, '\n')
+
+            id_list.append(i.product_id)
+            print(id_list, "  +  ", end='')
+
+        print(id_list)
+
+        if action_do != 'buy_now' and action_do != 'add_to_cart':
+
+            models.Cart.objects.filter(product_id=id).delete()
+            if len(id_list) > 1:
+                return redirect('store:cart')
+            else:
+                return redirect('store:shop')
+
+        if id not in id_list:
+            obj = models.Product.objects.get(id=id)
+            obj_todo = models.Cart(user=request.user, product=obj, quantity=quantity)
+            obj_todo.save()
+
+        if action_do == 'add_to_cart':
+            return redirect ('store:shop')
+        else:
+            return redirect('store:cart')
+
+
 class WishlistView(View):
 
     def get(self, request, id=None):
