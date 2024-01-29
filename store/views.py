@@ -21,6 +21,7 @@ class ShopView(View):
                               default=0, output_field=DecimalField(max_digits=10, decimal_places=2))
         price_with_discnt = ExpressionWrapper(
             (F('price') * (100.0 - F('discount_value')) / 100),
+
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
         products = models.Product.objects.annotate(discount_value=discount_value, price_before=F('price'),
@@ -101,6 +102,7 @@ class CartView(View):
 
         price_with_discnt = ExpressionWrapper(
             (F('price') * (100.0 - F('discount_value')) / 100),
+
             output_field=DecimalField(max_digits=10, decimal_places=2)
             )
 

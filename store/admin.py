@@ -11,7 +11,7 @@ admin.site.register(models.Product)
 admin.site.register(models.Discount)
 admin.site.register(models.Person)
 admin.site.register(models.Cart)
-
+admin.site.register(models.Profile)
 
 # admin.site.register(models.WishList)
 
