@@ -19,3 +19,10 @@ admin.site.register(models.Profile)
 @admin.register(models.WishList)
 class WishableListAdmin(admin.ModelAdmin):
     ...
+
+# @admin.register(models.Product)
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ['name', 'total_amount']
+#
+#     def total_amount(self, obj):
+#         return obj.Product.count()
