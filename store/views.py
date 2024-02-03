@@ -38,7 +38,7 @@ class ProductSingleView(View):
         return render(request, 'store/product-single.html',
                       context={'name': data.name, 'description': data.description,
                                'price': data.price, 'rating': 5.0,
-                               'url': data.image.url, })
+                               'url': data.image.url, 'id':id })
 
 
 class CartViewSet(viewsets.ModelViewSet):

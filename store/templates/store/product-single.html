@@ -85,7 +85,7 @@
     				<a href="{{ url }}" class="image-popup"><img src="{{ url }}" class="img-fluid" alt="Colorlib Template"></a>
     			</div>
     			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
-    				<h3>{{name}}</h3>
+    				<h3>{{name}} </h3>
     				<div class="rating d-flex">
 							<p class="text-left mr-4">
 								<a href="#" class="mr-2">{{rating}}</a>
@@ -137,7 +137,7 @@
 	          		<p style="color: #000;">600 kg available</p>
 	          	</div>
           	</div>
-          	<p><a href="{% url 'store:cart' %}" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+          	<p><a href="{% url 'store:cartadd' 'buy_now'  id  1  %}" class="btn btn-black py-3 px-5">Add to Cart</a></p>
     			</div>
     		</div>
     	</div>

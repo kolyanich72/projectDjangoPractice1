@@ -42,7 +42,7 @@ class CreateAccount(View):
 
    def post(self, request):
        form = CustomUserCreationForm(data=request.POST)
-
+       print(request.POST)
        if form.is_valid():
            username = form.cleaned_data.get('username')
            email = form.cleaned_data.get('email')
@@ -50,8 +50,7 @@ class CreateAccount(View):
            user = User.objects.create_user(username=username, email=email, password=password)
            user.save()
            login(request, user)
+           print( " create")
            return redirect('store:shop')
-       return render(request, 'login:create',context={'error':form.errors})
-
-
-
+       print( ' not valid')
+       return redirect(request, 'login:create') #,context={'error':form.errors})
