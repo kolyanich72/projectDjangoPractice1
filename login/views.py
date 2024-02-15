@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib.auth.backends import ModelBackend
 
 
 
@@ -42,6 +43,7 @@ class CreateAccount(View):
 
    def post(self, request):
        form = CustomUserCreationForm(data=request.POST)
+       print()
        print(request.POST)
        if form.is_valid():
            username = form.cleaned_data.get('username')
@@ -49,8 +51,10 @@ class CreateAccount(View):
            password = form.cleaned_data.get('password1')
            user = User.objects.create_user(username=username, email=email, password=password)
            user.save()
-           login(request, user)
+           login(request, user, backend='django.contrib.auth.backends.ModelBackend')
            print( " create")
            return redirect('store:shop')
-       print( ' not valid')
-       return redirect(request, 'login:create') #,context={'error':form.errors})
+       print( ' not valid', form.errors)
+      # return redirect(request, 'login:create') #,context={'error':form.errors})
+
+       return render(request, "login/create_account.html", context={'error': form.errors})
