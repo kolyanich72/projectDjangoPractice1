@@ -94,6 +94,9 @@ class CartViewSet(viewsets.ModelViewSet):
 
 
 class CartView(View):
+    def post(self, request):
+       print(request, " from POST")
+      #  cart_form =
 
     def get(self, request, ):
         discount_value = Case(When(discount__value__gte=0, discount__date_begin__lte=timezone.now(),
